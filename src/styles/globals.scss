@@ -55,6 +55,9 @@ body {
       scrollbar-width: none;
     }
     .keen-slider {
+      @media (max-width: 768) {
+        margin-left: 25px;
+      }
       @media (max-width: 500) {
         margin-left: 16px;
       }
@@ -151,7 +154,7 @@ body {
           width: 100%;
           height: 32px;
           min-height: auto;
-          justify-content: space-around;
+          justify-content: space-between;
         }
         @media (max-width: 230) {
           flex-wrap: wrap;
@@ -163,7 +166,6 @@ body {
           flex-direction: column;
           @media (max-width: 768) {
             flex-direction: row;
-            width: 100%;
           }
           @media (max-width: 500) {
             justify-content: center;
@@ -302,6 +304,7 @@ body {
       }
       .mainTrending {
         margin-bottom: 40px;
+
         @media (max-width: 500) {
           margin-bottom: 24px;
         }
@@ -315,6 +318,9 @@ body {
           @include text-preset-1;
           color: var(--color-white);
           margin-bottom: 24px;
+          @media (max-width: 768) {
+            margin-left: 25px;
+          }
           @media (max-width: 500) {
             @include text-preset-1-mobile;
             margin-left: 16px;
@@ -386,6 +392,10 @@ body {
       .recommended {
         margin-right: 36px;
         margin-bottom: 6rem;
+        @media (max-width: 768) {
+          margin-right: 20px;
+          margin-left: 25px;
+        }
         @media (max-width: 500) {
           margin-right: 16px;
           margin-left: 16px;
