@@ -1,8 +1,5 @@
 import "../styles/globals.scss";
-import { Provider } from "react-redux";
-import { store, persistor } from "../app/redux/store";
-import { PersistGate } from "redux-persist/integration/react";
-import { ReactNode } from "react";
+import { Providers } from "./Providers";
 
 export default function RootLayout({
   children,
@@ -15,15 +12,5 @@ export default function RootLayout({
         <Providers>{children}</Providers>
       </body>
     </html>
-  );
-}
-
-export function Providers({ children }: { children: ReactNode }) {
-  return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        {children}
-      </PersistGate>
-    </Provider>
   );
 }
