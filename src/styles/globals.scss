@@ -494,6 +494,15 @@ body {
             }
           }
         }
+        .tv {
+          margin-top: 40px;
+          @media (max-width: 768) {
+            margin-top: 32px;
+          }
+          @media (max-width: 500) {
+            margin-top: 24px;
+          }
+        }
       }
     }
   }
