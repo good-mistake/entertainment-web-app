@@ -2,19 +2,26 @@ import React from "react";
 import { MediaItem } from "../utils/types";
 import Image from "next/image";
 import { motion } from "framer-motion";
-
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 interface MovieProps {
   items: MediaItem[];
   onBookmark: (id: string) => void;
 }
 
 const Movies: React.FC<MovieProps> = ({ items, onBookmark }) => {
+  const search = useSelector((state: RootState) => state.media.search);
+  const filtered = items.filter(
+    (e) =>
+      e.category === "Movie" &&
+      e.title.toLowerCase().includes(search.toLowerCase())
+  );
   return (
     <div className="recommended">
       <h1>Movies</h1>
       <div className="recommendedContainer flex w-max grid grid-cols-4 gap-[40px]">
-        {Array.isArray(items) &&
-          items.map((e) => {
+        {Array.isArray(filtered) &&
+          filtered.map((e) => {
             return (
               <div
                 key={`${e.year}+${e.title}` || e?.id}

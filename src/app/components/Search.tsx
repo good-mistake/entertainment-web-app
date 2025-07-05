@@ -1,10 +1,12 @@
 import React from "react";
 import Image from "next/image";
-interface SearchProps {
-  search: string;
-  setSearch: (value: string) => void;
-}
-const Search: React.FC<SearchProps> = ({ search, setSearch }) => {
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { setSearch } from "../redux/mediaSlice";
+
+const Search = () => {
+  const dispatch = useDispatch();
+  const search = useSelector((state: RootState) => state.media.search);
   return (
     <label htmlFor="search" className="search">
       <Image
@@ -19,7 +21,7 @@ const Search: React.FC<SearchProps> = ({ search, setSearch }) => {
         id="search"
         placeholder="Search for movies or TV series"
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e) => dispatch(setSearch(e.target.value))}
       />
     </label>
   );

@@ -2,19 +2,27 @@ import React from "react";
 import { MediaItem } from "../utils/types";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 interface BookmarkProps {
   items: MediaItem[];
   onBookmark: (id: string) => void;
 }
 
 const Bookmark: React.FC<BookmarkProps> = ({ items, onBookmark }) => {
+  const search = useSelector((state: RootState) => state.media.search);
   const movieBookmark = items.filter(
-    (item) => item.category === "Movie" && item.isBookmarked
+    (item) =>
+      item.category === "Movie" &&
+      item.isBookmarked &&
+      item.title.toLowerCase().includes(search.toLowerCase())
   );
 
   const tvBookmark = items.filter(
-    (item) => item.category === "TV Series" && item.isBookmarked
+    (item) =>
+      item.category === "TV Series" &&
+      item.isBookmarked &&
+      item.title.toLowerCase().includes(search.toLowerCase())
   );
   return (
     <div className="recommended">

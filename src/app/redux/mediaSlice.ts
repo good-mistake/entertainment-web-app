@@ -5,12 +5,14 @@ interface MediaState {
   items: MediaItem[];
   loading: boolean;
   bookmarking: string[];
+  search: string;
 }
 
 const initialState: MediaState = {
   items: [],
   loading: false,
   bookmarking: [],
+  search: "",
 };
 
 export const fetchMediaItems = createAsyncThunk<MediaItem[], boolean>(
@@ -70,6 +72,9 @@ const mediaSlice = createSlice({
       const item = state.items.find((i) => i.id === action.payload);
       if (item) item.isBookmarked = !item.isBookmarked;
     },
+    setSearch(state, action: PayloadAction<string>) {
+      state.search = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -92,5 +97,5 @@ const mediaSlice = createSlice({
   },
 });
 
-export const { toggleBookmark } = mediaSlice.actions;
+export const { toggleBookmark, setSearch } = mediaSlice.actions;
 export default mediaSlice.reducer;

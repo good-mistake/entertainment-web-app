@@ -26,8 +26,8 @@ export default function Home() {
   );
   const loading = useSelector((state: RootState) => state.media.loading);
   const user = useSelector((state: RootState) => state.user.user);
-  const [search, setSearch] = useState("");
   const [view, setView] = useState("home");
+  const search = useSelector((state: RootState) => state.media.search);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -66,7 +66,7 @@ export default function Home() {
     <div className="home ">
       <Navbar userColor={user?.color} onNavigate={setView} view={view} />
       <div className="right">
-        <Search search={search} setSearch={setSearch} />
+        <Search />
         <AnimatePresence mode="wait">
           {view === "home" && (
             <motion.div
