@@ -1,103 +1,130 @@
-import Image from "next/image";
+"use client";
+import React, { useEffect, useState } from "react";
+import Navbar from "./components/navbar";
+import { fetchMediaItems } from "./redux/mediaSlice";
+import { MediaItem } from "./utils/types";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "./redux/store";
+import Trending from "./components/Trending";
+import { login } from "./redux/userSlice";
+import Search from "./components/Search";
+import Recommended from "./components/Recommended";
+import { toggleBookmark } from "./redux/mediaSlice";
+import { motion, AnimatePresence } from "framer-motion";
+import Movies from "./components/Movies";
+import Tvseries from "./components/Tvseries";
+import Bookmark from "./components/Bookmark";
+import { toggleBookmarkBackend } from "./redux/mediaSlice";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const dispatch = useDispatch<AppDispatch>();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.user.isAuthenticated
+  );
+  const items: MediaItem[] = useSelector(
+    (state: RootState) => state.media.items
+  );
+  const loading = useSelector((state: RootState) => state.media.loading);
+  const user = useSelector((state: RootState) => state.user.user);
+  const [search, setSearch] = useState("");
+  const [view, setView] = useState("home");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userString = localStorage.getItem("user");
+    if (token && userString) {
+      const user = JSON.parse(userString);
+      dispatch(login(user));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchMediaItems(isAuthenticated));
+  }, [dispatch, isAuthenticated]);
+  const handleBookmark = (id: string) => {
+    if (isAuthenticated) {
+      dispatch(toggleBookmarkBackend(id));
+    } else {
+      dispatch(toggleBookmark(id));
+    }
+  };
+  const trendingItems = items.filter((item) => item.isTrending);
+
+  const filteredItems = items.filter(
+    (item) =>
+      item.title.toLowerCase().includes(search.toLowerCase()) &&
+      !item.isTrending
+  );
+
+  const filteredMovies = items.filter((item) => item.category === "Movie");
+  const filteredTv = items.filter((item) => item.category === "TV Series");
+  const filteredBookmark = items.filter((item) => item.isBookmarked);
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div className="home ">
+      <Navbar userColor={user?.color} onNavigate={setView} view={view} />
+      <div className="right">
+        <Search search={search} setSearch={setSearch} />
+        <AnimatePresence mode="wait">
+          {view === "home" && (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {trendingItems && (
+                <Trending items={trendingItems} onBookmark={handleBookmark} />
+              )}
+
+              {filteredItems.length > 0 ? (
+                <Recommended
+                  items={filteredItems}
+                  onBookmark={handleBookmark}
+                />
+              ) : (
+                <h1 className="noResult">No results found</h1>
+              )}
+            </motion.div>
+          )}
+          {view === "movies" && (
+            <motion.div
+              key="movies"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Movies items={filteredMovies} onBookmark={handleBookmark} />
+            </motion.div>
+          )}
+          {view === "tv" && (
+            <motion.div
+              key="tv"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Tvseries items={filteredTv} onBookmark={handleBookmark} />
+            </motion.div>
+          )}
+          {view === "bookmark" && (
+            <motion.div
+              key="bookmark"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Bookmark items={filteredBookmark} onBookmark={handleBookmark} />
+            </motion.div>
+          )}
+        </AnimatePresence>{" "}
+      </div>
     </div>
   );
 }
