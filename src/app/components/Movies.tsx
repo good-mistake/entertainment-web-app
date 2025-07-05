@@ -14,7 +14,7 @@ const Movies: React.FC<MovieProps> = ({ items, onBookmark }) => {
   const filtered = items.filter(
     (e) =>
       e.category === "Movie" &&
-      e.title.toLowerCase().includes(search.toLowerCase())
+      (search ? e.title?.toLowerCase().includes(search.toLowerCase()) : true)
   );
   return (
     <div className="recommended">

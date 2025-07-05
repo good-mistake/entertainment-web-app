@@ -15,14 +15,14 @@ const Bookmark: React.FC<BookmarkProps> = ({ items, onBookmark }) => {
     (item) =>
       item.category === "Movie" &&
       item.isBookmarked &&
-      item.title.toLowerCase().includes(search.toLowerCase())
+      (search ? item.title?.toLowerCase().includes(search.toLowerCase()) : true)
   );
 
   const tvBookmark = items.filter(
     (item) =>
       item.category === "TV Series" &&
       item.isBookmarked &&
-      item.title.toLowerCase().includes(search.toLowerCase())
+      (search ? item.title?.toLowerCase().includes(search.toLowerCase()) : true)
   );
   return (
     <div className="recommended">
