@@ -39,8 +39,6 @@ const Movies: React.FC<MovieProps> = ({ items, onBookmark }) => {
                   >
                     {" "}
                     {e.isBookmarked ? (
-                      <div className="spinner" />
-                    ) : e.isBookmarked ? (
                       <Image
                         src={`/assets/icon-bookmark-full.svg`}
                         width={12}
