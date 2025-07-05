@@ -52,8 +52,9 @@ export default function Home() {
 
   const filteredItems = items.filter(
     (item) =>
-      item.title.toLowerCase().includes(search.toLowerCase()) &&
-      !item.isTrending
+      (search
+        ? item.title?.toLowerCase().includes(search.toLowerCase())
+        : true) && !item.isTrending
   );
 
   const filteredMovies = items.filter((item) => item.category === "Movie");
