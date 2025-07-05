@@ -1,4 +1,3 @@
-"use client";
 import "../styles/globals.scss";
 import { Provider } from "react-redux";
 import { store, persistor } from "../app/redux/store";
